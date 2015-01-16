@@ -37,7 +37,7 @@ Mat ColorKeyerHSV::process(const Mat &input){
     int g = qGreen(toRgb);
     int b = qBlue(toRgb);
 
-    Scalar color(r,g,b);
+    Scalar color(b,g,r);
 
     qDebug()<<"R:" <<r<<"G:"<<g<<"B:" <<b<<"HUT"<<h<<"SAT"<<s;
 

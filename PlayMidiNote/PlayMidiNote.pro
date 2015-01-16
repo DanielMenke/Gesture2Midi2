@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     ../ColorKeyer-regions/colorkeyerhsv.cpp \
     ../videoengine/videoengine.cpp \
     ../videoengine/videoformat.cpp \
-    ../videoengine/videowidget.cpp
+    ../videoengine/videowidget.cpp \
+    handanalyzer.cpp
 
 HEADERS  += mainwindow.h \
     ../ColorKeyer-regions/colorkeyerhsv.h \
@@ -25,7 +26,8 @@ HEADERS  += mainwindow.h \
     ../videoengine/videoengine.h \
     ../videoengine/videoformat.h \
     ../videoengine/videoprocessor.h \
-    ../videoengine/videowidget.h
+    ../videoengine/videowidget.h \
+    handanalyzer.h
 
 
 
