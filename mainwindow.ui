@@ -308,12 +308,12 @@
      <rect>
       <x>90</x>
       <y>251</y>
-      <width>121</width>
+      <width>181</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Send Midi Controller</string>
+     <string>Send Midi Controller to Midi-Port</string>
     </property>
     <property name="iconSize">
      <size>
