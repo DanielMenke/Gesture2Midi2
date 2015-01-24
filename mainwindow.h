@@ -22,17 +22,6 @@ public:
 
 
 private slots:
-    void on_note_2_clicked(bool checked);
-    void on_note_3_clicked(bool checked);
-    void on_note_4_clicked(bool checked);
-    void on_note_5_clicked(bool checked);
-    void on_note_6_clicked(bool checked);
-    void on_note_7_clicked(bool checked);
-    void on_note_8_clicked(bool checked);
-    void on_note_9_clicked(bool checked);
-    void on_note_10_clicked(bool checked);
-    void on_note_11_clicked(bool checked);
-
 
     void on_midichannel_valueChanged(int arg1);
 
