@@ -11,10 +11,6 @@ HandAnalyzer::HandAnalyzer():
 
 }
 
-int HandAnalyzer::getNumberOfFingers(){
-    return this->numberOfFingers;
-}
-
 cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     Mat copy;
     Mat output;
@@ -49,6 +45,9 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
             biggestArea = area;
             indexOfBiggestContour = count;
         }
+    }
+    if (indexOfBiggestContour != -1){
+            this->defineFingerDepth(contours[indexOfBiggestContour], copy);
     }
 
     // vector<vector<int> > hullsI(0);
@@ -85,13 +84,13 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     /// Draw convexityDefects
     //for( int i = 0; i< contours.size(); i++ )
     //{
+    int finger = 0;
     if (indexOfBiggestContour != -1){
         //size_t count = contours[i].size();
         size_t count = contours[indexOfBiggestContour].size();
         if( count >=300 )
         {
 
-            int finger = -2;
             vector<Vec4i>::iterator d=defects[indexOfBiggestContour].begin();
             while( d!=defects[indexOfBiggestContour].end() ) {
                 Vec4i& v=(*d);
@@ -104,7 +103,7 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
                 line(conv, ptStart, ptEnd, color2, 1 );
                 line(conv, ptStart, ptFar, color3, 1 );
                 line(conv, ptEnd, ptFar, color3, 1 );
-                if (depth > 25.0f){
+                if (depth > depthThreshold){
                     finger++;
                     circle(conv, ptFar,   10, color5, 2 );
                     circle(conv, ptStart, 12, color4, 4);
@@ -114,13 +113,79 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
                 }
                 d++;
             }
-            this->numberOfFingers = finger;
-
-
+            if (finger < 0){
+                            finger = 0;
+            } else if (finger > 5){
+                            finger = 5;
+            }
         }
        }
-
+        this->setNumberOfFinger(finger);
         return conv;
+
+}
+
+//Neu von Finn
+bool HandAnalyzer::isSchlag(){
+    return this->schlag;
+}
+
+void HandAnalyzer::defineFingerDepth(cv::vector<Point> cnt, const Mat &input){
+    int width = input.cols;
+    int height = input.rows;
+    float fingerhoehe = height * 0.25;
+    Rect rect = boundingRect(cnt);
+    int contourWidth = rect.width;
+    int contourHeight = rect.height;
+  //  qDebug() << "Rectwidth: " << contourWidth << ".Recthieght: " << contourHeight;
+
+    float widthVerhaeltnis = width / contourWidth;
+    float heightVerhaeltnis = height / contourHeight;
+    float deltaAverage = (widthVerhaeltnis + heightVerhaeltnis) / 2;
+    depthThreshold = fingerhoehe / deltaAverage;
+   // qDebug() << "Neue Tiefe für Finger:" << depthThreshold << " Fingerhoehe: " << fingerhoehe << " deltaAverage: " << deltaAverage;
+    int contourSizeAverage = (contourHeight + contourWidth) / 2;
+    this->setRectAverage(contourSizeAverage);
+}
+
+void HandAnalyzer::setNumberOfFinger(int n){
+    int bound = 12;
+    this->fingerValues[bound] = n;
+    for(int i = 0; i < bound; i++){
+        this->fingerValues[i] = this->fingerValues[i+1];
+    }
+    int sum = 0;
+    for(int i = 0; i < bound + 1; i++){
+        //qDebug() << "Fingervalue #" << i << " is " << this->fingerValues[i];
+        sum += this->fingerValues[i];
+    }
+     //qDebug() << "Summe: " << sum;
+    this->numberOfFingers = sum / bound;
+}
+
+int HandAnalyzer::getNumberOfFingers(){
+    return this->numberOfFingers;
+}
+
+void HandAnalyzer::setRectAverage(int rectA){
+    float rectVerhaeltnis = 1.5;
+    int bound = 7;
+    for(int i = 0; i < bound; i++){
+        this->rectAverages[i] = this->rectAverages[i+1];
+    }
+    this->rectAverages[bound] = rectA;
+    int sum = 0;
+    bound -= 2;
+    for(int i = 0; i < bound + 1; i++){
+        sum += this->rectAverages[i];
+    }
+    int averageOfTheOlderRects = sum / bound;
+    if (rectA > (averageOfTheOlderRects * rectVerhaeltnis)){
+        this->schlag = true;
+        qDebug() << "Schlag mit " << this->numberOfFingers << " Finger.";
+    } else {
+        this->schlag = false;
+    }
 
 }
 
