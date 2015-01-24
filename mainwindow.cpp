@@ -12,12 +12,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     colorKeyerHSV(new ColorKeyerHSV())
 {
+
     QShortcut *spacebar = new QShortcut(QKeySequence(Qt::Key_Space),this);
     ui->setupUi(this);
     ui->midiControllerSpinBox->setValue(16);
-    connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
+    ui->midiControllerValueDisplay->setPalette(Qt::black);
     QStringList connections = midiOutput.connections(true);
     ui->comboBox->addItems(connections);
+
+    connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
     midiOutput.open("LoopBe Internal MIDI");
     midichannel = ui->midichannel->value();
     colorKeyerHSV->setHueTolerance(ui->hueTolerance->value());
@@ -90,8 +93,8 @@ void MainWindow::on_saturationValue_valueChanged(int value)
 void MainWindow::sendMidiParameter(){
         int midiControllerValue = colorKeyerHSV->handAnalyzer->midiParameterController->getMidiController();
         midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
-        this->ui->midiControllerValueDisplay->setDigitCount(midiControllerValue);
-        qDebug()<<"Midi-Controller-Out: "<<midiControllerValue;
+        this->ui->midiControllerValueDisplay->display(midiControllerValue);
+        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
 
 }
 
