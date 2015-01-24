@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QShortcut *spacebar = new QShortcut(QKeySequence(Qt::Key_Space),this);
     ui->setupUi(this);
     ui->midiControllerSpinBox->setValue(16);
-
+    connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
     QStringList connections = midiOutput.connections(true);
     ui->comboBox->addItems(connections);
     midiOutput.open("LoopBe Internal MIDI");
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     videoEngine -> setProcessor(colorKeyerHSV);
     connect(videoEngine, SIGNAL(sendProcessedImage(const QImage&)), ui->videoLabel, SLOT(setImage(const QImage&)));
     videoEngine -> openCamera();
-    connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
+
     videoEngine -> start();
 }
 
