@@ -50,6 +50,11 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
             indexOfBiggestContour = count;
         }
     }
+    if (indexOfBiggestContour != -1){
+        Rect rect = boundingRect(contours[indexOfBiggestContour]);
+        midiParameterController->setMidiController(rect.y);
+        rectangle(conv,rect,(255,255,255),1,8,0);
+    }
 
     // vector<vector<int> > hullsI(0);
     // vector<vector<Point> > hullsP(0);
@@ -88,6 +93,7 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     if (indexOfBiggestContour != -1){
         //size_t count = contours[i].size();
         size_t count = contours[indexOfBiggestContour].size();
+
         if( count >=300 )
         {
 
@@ -109,7 +115,8 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
                     circle(conv, ptFar,   10, color5, 2 );
                     circle(conv, ptStart, 12, color4, 4);
                     circle(conv, ptEnd, 12, color4, 4);
-                    midiParameterController->setMidiController(ptEnd.y);
+
+
 
                 }
                 d++;
