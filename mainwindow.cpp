@@ -90,6 +90,7 @@ void MainWindow::on_saturationValue_valueChanged(int value)
 void MainWindow::sendMidiParameter(){
         int midiControllerValue = colorKeyerHSV->handAnalyzer->midiParameterController->getMidiController();
         midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
+        this->ui->midiControllerValueDisplay->setDigitCount(midiControllerValue);
         qDebug()<<"Midi-Controller-Out: "<<midiControllerValue;
 
 }

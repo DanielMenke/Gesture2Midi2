@@ -361,6 +361,16 @@
      <number>127</number>
     </property>
    </widget>
+   <widget class="QLCDNumber" name="midiControllerValueDisplay">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>30</y>
+      <width>64</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
