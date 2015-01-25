@@ -64,7 +64,8 @@ private:
     VideoEngine *videoEngine;
     ColorKeyerHSV *colorKeyerHSV;
     bool sendMidiControllerEnabled;
-
+    std::vector<int> currentlyPlaying;
+    bool isPlaying;
 
 };
 

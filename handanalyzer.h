@@ -2,6 +2,7 @@
 #define HANDANALYZER_H
 #include <opencv2/opencv.hpp>
 #include "midiparametercontroller.h"
+#include "midinotecontroller.h"
 class HandAnalyzer
 {
 public:
@@ -13,6 +14,7 @@ public:
     void setRectAverage(int rectA);
     int getNumberOfFingers();
     MidiParameterController *midiParameterController;
+    MidiNoteController *midiNoteController;
 
 private:
     int numberOfFingers;

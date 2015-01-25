@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     videowidget.cpp \
     winmidiinput.cpp \
     winmidioutput.cpp \
-    midiparametercontroller.cpp
+    midiparametercontroller.cpp \
+    midinotecontroller.cpp
 
 HEADERS  += mainwindow.h \
     colorkeyerhsv.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     videoformat.h \
     videoprocessor.h \
     videowidget.h \
-    midiparametercontroller.h
+    midiparametercontroller.h \
+    midinotecontroller.h
 
 FORMS    += mainwindow.ui
 include(drumstick.pro)

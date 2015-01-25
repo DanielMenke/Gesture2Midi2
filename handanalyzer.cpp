@@ -7,8 +7,10 @@ using namespace cv;
 
 HandAnalyzer::HandAnalyzer():
     midiParameterController(new MidiParameterController())
+    ,midiNoteController(new MidiNoteController())
 {
-
+    midiNoteController->setNoteForNoteWithOctave("C", 4);
+    midiNoteController->initPreset();
 }
 
 cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
