@@ -37,6 +37,47 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     copy.convertTo(converted, CV_8UC1);
 
     findContours(converted, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    int indexOfLeftBiggestContour = -1;
+    int indexOfRightBiggestContour = -1;
+    int leftArea = 0;
+    int rightArea = 0;
+
+    int xBorder = copy.cols / 4;
+    int index = 0;
+    for (vector<Point> contour : contours){
+        int area = contourArea(contour);
+        Rect rect = boundingRect(contour);
+        int xCenter = (rect.x + rect.width) / 2;
+        qDebug() << "xborder: " << xBorder << "xcenter: " << xCenter;
+        if (xCenter < xBorder){
+            //Left side
+            if (area > leftArea){
+                leftArea = area;
+                indexOfLeftBiggestContour = index;
+            }
+        } else {
+            //Right side
+            if (area > rightArea){
+                rightArea = area;
+                indexOfRightBiggestContour = index;
+            }
+        }
+
+        index++;
+    }
+
+    if (indexOfRightBiggestContour != -1){
+         qDebug() << "Rightside";
+        Rect rect = boundingRect(contours[indexOfRightBiggestContour]);
+        midiParameterController->setMidiController(rect.y);
+        rectangle(conv,rect,(255,255,255),1,8,0);
+    }
+    if (indexOfLeftBiggestContour != -1){
+         qDebug() << "löööftside";
+          this->defineFingerDepth(contours[indexOfLeftBiggestContour], copy);
+    }
+
+    /*
     int secondBiggestArea=0;
     int indexOfSecondBiggestContour = -1;
     int biggestArea = 0;
@@ -55,10 +96,10 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     if (indexOfSecondBiggestContour != -1){
         Rect rect = boundingRect(contours[indexOfSecondBiggestContour]);
         midiParameterController->setMidiController(rect.y);
-        this->defineFingerDepth(contours[indexOfSecondBiggestContour], copy);
+        this->defineFingerDepth(contours[indexOfBiggestContour], copy);
     
         rectangle(conv,rect,(255,255,255),1,8,0);
-    }
+    } */
 
     // vector<vector<int> > hullsI(0);
     // vector<vector<Point> > hullsP(0);
@@ -95,19 +136,19 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     //for( int i = 0; i< contours.size(); i++ )
     //{
     int finger = 0;
-    if (indexOfBiggestContour != -1){
+    if (indexOfLeftBiggestContour != -1){
         //size_t count = contours[i].size();
-        size_t count = contours[indexOfBiggestContour].size();
+        size_t count = contours[indexOfLeftBiggestContour].size();
 
         if( count >=300 )
         {
 
-            vector<Vec4i>::iterator d=defects[indexOfBiggestContour].begin();
-            while( d!=defects[indexOfBiggestContour].end() ) {
+            vector<Vec4i>::iterator d=defects[indexOfLeftBiggestContour].begin();
+            while( d!=defects[indexOfLeftBiggestContour].end() ) {
                 Vec4i& v=(*d);
-                int startidx=v[0]; Point ptStart( contours[indexOfBiggestContour][startidx] );
-                int endidx=v[1]; Point ptEnd( contours[indexOfBiggestContour][endidx] );
-                int faridx=v[2]; Point ptFar( contours[indexOfBiggestContour][faridx] );
+                int startidx=v[0]; Point ptStart( contours[indexOfLeftBiggestContour][startidx] );
+                int endidx=v[1]; Point ptEnd( contours[indexOfLeftBiggestContour][endidx] );
+                int faridx=v[2]; Point ptFar( contours[indexOfLeftBiggestContour][faridx] );
                 float depth = v[3] / 256;
 
 

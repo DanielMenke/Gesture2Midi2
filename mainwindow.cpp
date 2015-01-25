@@ -100,29 +100,70 @@ void MainWindow::sendMidiParameter(){
     if (this->colorKeyerHSV->handAnalyzer->isSchlag()){
         qDebug() << "Schlag im MainWindow";
 
-        /*
-        if (this->isPlaying){
-            for(vector<int>::iterator it = this->currentlyPlaying.begin(); it != this->currentlyPlaying.end(); ++it) {
-                this->midiOutput.sendNoteOff(midichannel, *it, 0);
-            }
-            this->isPlaying = false;
-        }*/
         int numberOfFingers = this->colorKeyerHSV->handAnalyzer->getNumberOfFingers();
         vector<int> currentNotes = this->colorKeyerHSV->handAnalyzer->midiNoteController->getCurrentNotes(numberOfFingers);
-        this->midiOutput.sendNoteOn(midichannel, currentNotes.at(0),127);
-        this->midiOutput.sendNoteOn(midichannel, currentNotes.at(1),127);
-        this->midiOutput.sendNoteOn(midichannel, currentNotes.at(2),127);
-        /*
-        for(vector<int>::iterator it = currentNotes.begin(); it != currentNotes.end(); ++it) {
-          this->midiOutput.sendNoteOn(midichannel, *it, 127);
-           this->currentlyPlaying.push_back(*it);
+        vector<int> notesToTurnOff;
+        vector<int> notesToTurnOn;
+
+        if (!this->currentlyPlaying.empty()){
+            qDebug() << "Not empty you snob! no. of el: " << this->currentlyPlaying.size();
+            //Check which notes needs to be turned off etc.
+           vector<int> intersection =  this->instersection(this->currentlyPlaying, currentNotes);
+           notesToTurnOff = this->difference(intersection, currentlyPlaying);
+           notesToTurnOn = this->difference(intersection, currentNotes);
+        } else {
+            for (int it : currentNotes){
+                notesToTurnOn.push_back(it);
+            }
         }
-        */
-        this->isPlaying = true;
+
+
+    qDebug() << "Number of notes to turn on given by the midinoteController " << currentNotes.size();
+    qDebug() << "Number off notes to turn on: " << notesToTurnOn.size();
+
+       for (int i = 0; i < notesToTurnOff.size(); i++){
+           qDebug() << "Turn off note: " << notesToTurnOff.at(i);
+           this->midiOutput.sendNoteOff(midichannel, notesToTurnOff.at(i), 0);
+       }
+
+        for (int i = 0; i < notesToTurnOn.size(); i++){
+            qDebug() << "Turn on note: " << notesToTurnOn.at(i);
+            this->midiOutput.sendNoteOn(midichannel, notesToTurnOn.at(i), 127);
+        }
+        this->currentlyPlaying.clear();
+        for (int i = 0; i < currentNotes.size(); i++){
+            this->currentlyPlaying.push_back(currentNotes.at(i));
+        }
+
         this->ui->midiControllerValueDisplay->display(midiControllerValue);
         this->ui->midiControllerValueKnob->setValue(midiControllerValue);
 
     }
+}
+vector<int> MainWindow::instersection(vector<int> &v1, vector<int> &v2)
+{
+
+    vector<int> v3;
+
+    sort(v1.begin(), v1.end());
+    sort(v2.begin(), v2.end());
+
+    set_intersection(v1.begin(),v1.end(),v2.begin(),v2.end(),back_inserter(v3));
+
+    return v3;
+}
+
+vector<int> MainWindow::difference(vector<int> &v1, vector<int> &v2)
+{
+
+    vector<int> v3;
+
+    sort(v1.begin(), v1.end());
+    sort(v2.begin(), v2.end());
+
+    set_difference(v1.begin(),v1.end(),v2.begin(),v2.end(),back_inserter(v3));
+
+    return v3;
 }
 
 
@@ -134,6 +175,16 @@ void MainWindow::on_sendMidiControllerCheckbox_toggled(bool checked){
         timer.start(50);
     }else{
         timer.stop();
+        if (this->isPlaying){
+            for (int i = 0; i < this->currentlyPlaying.size(); i++){
+                this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
+            }
+            this->currentlyPlaying.clear();
+            //for(vector<int>::iterator it = this->currentlyPlaying.begin(); it != this->currentlyPlaying.end(); ++it) {
+              //  this->midiOutput.sendNoteOff(midichannel, *it, 0);
+            //}
+            this->isPlaying = false;
+        }
     }
 }
 
