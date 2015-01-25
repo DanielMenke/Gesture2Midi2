@@ -109,8 +109,8 @@ void MainWindow::sendMidiParameter(){
             qDebug() << "Not empty you snob! no. of el: " << this->currentlyPlaying.size();
             //Check which notes needs to be turned off etc.
            vector<int> intersection =  this->instersection(this->currentlyPlaying, currentNotes);
-           notesToTurnOff = this->difference(intersection, this->currentlyPlaying);
-           notesToTurnOn = this->difference(intersection, currentNotes);
+           notesToTurnOff = this->difference( this->currentlyPlaying, intersection);
+           notesToTurnOn = this->difference(currentNotes, intersection);
         } else {
             for (int it : currentNotes){
                 notesToTurnOn.push_back(it);
@@ -226,8 +226,8 @@ void MainWindow::on_midiControllerSpinBox_valueChanged(int arg1)
     midiControllerNumber = arg1;
 }
 
-void MainWindow::on_grundTonComboBox_currentIndexChanged(const QString &arg1)
-{
+void MainWindow::setUpCurrentNote(){
+    //Stop all playing notes at first
     if (this->isPlaying){
         for (int i = 0; i < this->currentlyPlaying.size(); i++){
             this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
@@ -238,12 +238,12 @@ void MainWindow::on_grundTonComboBox_currentIndexChanged(const QString &arg1)
         //}
         this->isPlaying = false;
     }
-    string castedArg1 = arg1.toStdString();
-    int oktave = this->ui->oktavenComboBox->currentText().toInt();
-    this->colorKeyerHSV->handAnalyzer->midiNoteController->setNoteForNoteWithOctave(castedArg1, oktave);
+
+    //Then set the new note
+    //string grundton =
 }
 
-
+/*
 void MainWindow::on_oktavenComboBox_activated(const QString &arg1)
 {
     if (this->isPlaying){
@@ -259,4 +259,4 @@ void MainWindow::on_oktavenComboBox_activated(const QString &arg1)
     string grundton = this->ui->grundTonComboBox->currentText().toStdString();
     int oktave = arg1.toInt();
     this->colorKeyerHSV->handAnalyzer->midiNoteController->setNoteForNoteWithOctave(grundton, oktave);
-}
+}*/
