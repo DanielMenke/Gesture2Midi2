@@ -35,21 +35,25 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     copy.convertTo(converted, CV_8UC1);
 
     findContours(converted, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-
+    int secondBiggestArea=0;
+    int indexOfSecondBiggestContour = -1;
     int biggestArea = 0;
     int indexOfBiggestContour = -1;
+
     for (int count = 0; count < contours.size(); count++){
         vector<Point>contour = contours[count];
         int area = contourArea(contour);
         if (area > biggestArea){
+            secondBiggestArea=biggestArea;
             biggestArea = area;
+            indexOfSecondBiggestContour = indexOfBiggestContour;
             indexOfBiggestContour = count;
         }
     }
-    if (indexOfBiggestContour != -1){
-        Rect rect = boundingRect(contours[indexOfBiggestContour]);
+    if (indexOfSecondBiggestContour != -1){
+        Rect rect = boundingRect(contours[indexOfSecondBiggestContour]);
         midiParameterController->setMidiController(rect.y);
-        this->defineFingerDepth(contours[indexOfBiggestContour], copy);
+        this->defineFingerDepth(contours[indexOfSecondBiggestContour], copy);
     
         rectangle(conv,rect,(255,255,255),1,8,0);
     }
