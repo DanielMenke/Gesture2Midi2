@@ -13,10 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     colorKeyerHSV(new ColorKeyerHSV())
 {
+
     QShortcut *spacebar = new QShortcut(QKeySequence(Qt::Key_Space),this);
     ui->setupUi(this);
     ui->midiControllerSpinBox->setValue(16);
     connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
+    ui->midiControllerValueDisplay->setPalette(Qt::black);
     QStringList connections = midiOutput.connections(true);
     ui->comboBox->addItems(connections);
 
@@ -117,6 +119,8 @@ void MainWindow::sendMidiParameter(){
         }
         */
         this->isPlaying = true;
+        this->ui->midiControllerValueDisplay->display(midiControllerValue);
+        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
 
     }
 }
