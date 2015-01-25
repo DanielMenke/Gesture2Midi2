@@ -6,6 +6,7 @@
 #include "colorkeyerhsv.h"
 #include "QShortcut"
 
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -92,7 +93,30 @@ void MainWindow::sendMidiParameter(){
         midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
         this->ui->midiControllerValueDisplay->setDigitCount(midiControllerValue);
         qDebug()<<"Midi-Controller-Out: "<<midiControllerValue;
+    if (this->colorKeyerHSV->handAnalyzer->isSchlag()){
+        qDebug() << "Schlag im MainWindow";
 
+        /*
+        if (this->isPlaying){
+            for(vector<int>::iterator it = this->currentlyPlaying.begin(); it != this->currentlyPlaying.end(); ++it) {
+                this->midiOutput.sendNoteOff(midichannel, *it, 0);
+            }
+            this->isPlaying = false;
+        }*/
+        int numberOfFingers = this->colorKeyerHSV->handAnalyzer->getNumberOfFingers();
+        vector<int> currentNotes = this->colorKeyerHSV->handAnalyzer->midiNoteController->getCurrentNotes(numberOfFingers);
+        this->midiOutput.sendNoteOn(midichannel, currentNotes.at(0),127);
+        this->midiOutput.sendNoteOn(midichannel, currentNotes.at(1),127);
+        this->midiOutput.sendNoteOn(midichannel, currentNotes.at(2),127);
+        /*
+        for(vector<int>::iterator it = currentNotes.begin(); it != currentNotes.end(); ++it) {
+          this->midiOutput.sendNoteOn(midichannel, *it, 127);
+           this->currentlyPlaying.push_back(*it);
+        }
+        */
+        this->isPlaying = true;
+
+    }
 }
 
 
