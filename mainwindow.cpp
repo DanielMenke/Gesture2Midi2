@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->midiControllerSpinBox->setValue(16);
     connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
-    ui->midiControllerValueDisplay->setPalette(Qt::black);
+    ui->midiControllerValueDisplay->setPalette(Qt::green);
     QStringList connections = midiOutput.connections(true);
     ui->comboBox->addItems(connections);
 
@@ -95,7 +95,8 @@ void MainWindow::on_saturationValue_valueChanged(int value)
 void MainWindow::sendMidiParameter(){
         int midiControllerValue = colorKeyerHSV->handAnalyzer->midiParameterController->getMidiController();
         midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
-        this->ui->midiControllerValueDisplay->setDigitCount(midiControllerValue);
+        this->ui->midiControllerValueDisplay->display(midiControllerValue);
+        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
         qDebug()<<"Midi-Controller-Out: "<<midiControllerValue;
     if (this->colorKeyerHSV->handAnalyzer->isSchlag()){
         qDebug() << "Schlag im MainWindow";
@@ -135,8 +136,7 @@ void MainWindow::sendMidiParameter(){
             this->currentlyPlaying.push_back(currentNotes.at(i));
         }
 
-        this->ui->midiControllerValueDisplay->display(midiControllerValue);
-        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
+
 
     }
 }
