@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
     QStringList connections = midiOutput.connections(true);
     ui->comboBox->addItems(connections);
+
+    connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
     midiOutput.open("LoopBe Internal MIDI");
     midichannel = ui->midichannel->value();
     colorKeyerHSV->setHueTolerance(ui->hueTolerance->value());
