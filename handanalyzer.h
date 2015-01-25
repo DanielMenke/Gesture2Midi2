@@ -20,7 +20,7 @@ private:
     int numberOfFingers;
     float depthThreshold;
     int rectAverages[8];
-    int fingerValues[12];
+    int fingerValues[6];
     bool schlag;
 };
 

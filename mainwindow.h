@@ -19,9 +19,9 @@ public:
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    vector<int> instersection(vector<int> &v1, vector<int> &v2);
-    vector<int> difference(vector<int> &v1, vector<int> &v2);
-
+    vector<int> instersection(vector<int> v1, vector<int> v2);
+    vector<int> difference(vector<int> v1, vector<int> v2);
+    void setUpCurrentNote();
 
 private slots:
 

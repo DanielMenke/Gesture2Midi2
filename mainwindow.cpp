@@ -110,8 +110,8 @@ void MainWindow::sendMidiParameter(){
             qDebug() << "Not empty you snob! no. of el: " << this->currentlyPlaying.size();
             //Check which notes needs to be turned off etc.
            vector<int> intersection =  this->instersection(this->currentlyPlaying, currentNotes);
-           notesToTurnOff = this->difference(intersection, currentlyPlaying);
-           notesToTurnOn = this->difference(intersection, currentNotes);
+           notesToTurnOff = this->difference( this->currentlyPlaying, intersection);
+           notesToTurnOn = this->difference(currentNotes, intersection);
         } else {
             for (int it : currentNotes){
                 notesToTurnOn.push_back(it);
@@ -140,7 +140,7 @@ void MainWindow::sendMidiParameter(){
 
     }
 }
-vector<int> MainWindow::instersection(vector<int> &v1, vector<int> &v2)
+vector<int> MainWindow::instersection(vector<int> v1, vector<int> v2)
 {
 
     vector<int> v3;
@@ -150,10 +150,15 @@ vector<int> MainWindow::instersection(vector<int> &v1, vector<int> &v2)
 
     set_intersection(v1.begin(),v1.end(),v2.begin(),v2.end(),back_inserter(v3));
 
+     qDebug() <<"Intersection";
+    for (int i : v3){
+        qDebug() << "returne: " << i;
+    }
+
     return v3;
 }
 
-vector<int> MainWindow::difference(vector<int> &v1, vector<int> &v2)
+vector<int> MainWindow::difference(vector<int> v1, vector<int> v2)
 {
 
     vector<int> v3;
@@ -162,6 +167,11 @@ vector<int> MainWindow::difference(vector<int> &v1, vector<int> &v2)
     sort(v2.begin(), v2.end());
 
     set_difference(v1.begin(),v1.end(),v2.begin(),v2.end(),back_inserter(v3));
+
+    qDebug() <<"Differenz";
+    for (int i : v3){
+        qDebug() << "returne: " << i;
+    }
 
     return v3;
 }
@@ -215,3 +225,38 @@ void MainWindow::on_midiControllerSpinBox_valueChanged(int arg1)
 {
     midiControllerNumber = arg1;
 }
+
+void MainWindow::setUpCurrentNote(){
+    //Stop all playing notes at first
+    if (this->isPlaying){
+        for (int i = 0; i < this->currentlyPlaying.size(); i++){
+            this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
+        }
+        this->currentlyPlaying.clear();
+        //for(vector<int>::iterator it = this->currentlyPlaying.begin(); it != this->currentlyPlaying.end(); ++it) {
+          //  this->midiOutput.sendNoteOff(midichannel, *it, 0);
+        //}
+        this->isPlaying = false;
+    }
+
+    //Then set the new note
+    //string grundton =
+}
+
+/*
+void MainWindow::on_oktavenComboBox_activated(const QString &arg1)
+{
+    if (this->isPlaying){
+        for (int i = 0; i < this->currentlyPlaying.size(); i++){
+            this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
+        }
+        this->currentlyPlaying.clear();
+        //for(vector<int>::iterator it = this->currentlyPlaying.begin(); it != this->currentlyPlaying.end(); ++it) {
+          //  this->midiOutput.sendNoteOff(midichannel, *it, 0);
+        //}
+        this->isPlaying = false;
+    }
+    string grundton = this->ui->grundTonComboBox->currentText().toStdString();
+    int oktave = arg1.toInt();
+    this->colorKeyerHSV->handAnalyzer->midiNoteController->setNoteForNoteWithOctave(grundton, oktave);
+}*/

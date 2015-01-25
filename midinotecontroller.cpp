@@ -1,4 +1,5 @@
 #include "midinotecontroller.h"
+#include <QDebug>
 
 MidiNoteController::MidiNoteController()
 {
@@ -65,14 +66,16 @@ void MidiNoteController::setNoteForNoteWithOctave(string note, int octave){
         map<string,int> midiMap= this->midiMap();
         int noteValue = midiMap[note];
         this->currentNote =  (noteValue + (12 * octave));
+        //qDebug() << "New grundton " << this->currentNote;
 }
 
 vector<int> MidiNoteController::getCurrentNotes(int numberOfFingers){
-
+        qDebug() << "Finger: " << numberOfFingers;
         vector<int> chord (this->preset.at(numberOfFingers));
         vector<int> currentNotes;
-        for(std::vector<int>::iterator it = chord.begin(); it != chord.end(); ++it) {
-          currentNotes.push_back(*it + this->currentNote);
+        for (int note : chord){
+            int resultNote = note + this->currentNote;
+            currentNotes.push_back(resultNote);
         }
         return currentNotes;
 }
