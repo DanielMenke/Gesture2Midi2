@@ -19,8 +19,8 @@ public:
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    vector<int> instersection(vector<int> &v1, vector<int> &v2);
-    vector<int> difference(vector<int> &v1, vector<int> &v2);
+    vector<int> instersection(vector<int> v1, vector<int> v2);
+    vector<int> difference(vector<int> v1, vector<int> v2);
 
 
 private slots:
@@ -56,6 +56,11 @@ private slots:
     void toggleButtonBySpaceBar();
 
     void on_midiControllerSpinBox_valueChanged(int arg1);
+
+    void on_grundTonComboBox_currentIndexChanged(const QString &arg1);
+
+
+    void on_oktavenComboBox_activated(const QString &arg1);
 
 private:
     int midiControllerNumber;

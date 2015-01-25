@@ -48,7 +48,7 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
         int area = contourArea(contour);
         Rect rect = boundingRect(contour);
         int xCenter = (rect.x + rect.width) / 2;
-        qDebug() << "xborder: " << xBorder << "xcenter: " << xCenter;
+        //qDebug() << "xborder: " << xBorder << "xcenter: " << xCenter;
         if (xCenter < xBorder){
             //Left side
             if (area > leftArea){
@@ -67,13 +67,13 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
     }
 
     if (indexOfRightBiggestContour != -1){
-         qDebug() << "Rightside";
+         //qDebug() << "Rightside";
         Rect rect = boundingRect(contours[indexOfRightBiggestContour]);
         midiParameterController->setMidiController(rect.y);
         rectangle(conv,rect,(255,255,255),1,8,0);
     }
     if (indexOfLeftBiggestContour != -1){
-         qDebug() << "löööftside";
+         //qDebug() << "löööftside";
           this->defineFingerDepth(contours[indexOfLeftBiggestContour], copy);
     }
 
@@ -186,7 +186,7 @@ bool HandAnalyzer::isSchlag(){
 void HandAnalyzer::defineFingerDepth(cv::vector<Point> cnt, const Mat &input){
     int width = input.cols;
     int height = input.rows;
-    float fingerhoehe = height * 0.25;
+    float fingerhoehe = height * 0.15;
     Rect rect = boundingRect(cnt);
     int contourWidth = rect.width;
     int contourHeight = rect.height;
@@ -202,18 +202,25 @@ void HandAnalyzer::defineFingerDepth(cv::vector<Point> cnt, const Mat &input){
 }
 
 void HandAnalyzer::setNumberOfFinger(int n){
-    int bound = 12;
+    int bound = 6;
     this->fingerValues[bound] = n;
     for(int i = 0; i < bound; i++){
         this->fingerValues[i] = this->fingerValues[i+1];
     }
     int sum = 0;
+    int divider = 0;
     for(int i = 0; i < bound + 1; i++){
         //qDebug() << "Fingervalue #" << i << " is " << this->fingerValues[i];
-        sum += this->fingerValues[i];
+        if (this->fingerValues[i] != 0){
+            sum += this->fingerValues[i];
+            divider++;
+        }
     }
      //qDebug() << "Summe: " << sum;
-    this->numberOfFingers = sum / bound;
+    if ( sum > 0 && divider > 0){
+        this->numberOfFingers = sum / divider;
+        qDebug() << "Neue Fingeranzahl: " << this->numberOfFingers;
+    }
 }
 
 int HandAnalyzer::getNumberOfFingers(){
