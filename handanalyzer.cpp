@@ -219,7 +219,7 @@ void HandAnalyzer::setNumberOfFinger(int n){
      //qDebug() << "Summe: " << sum;
     if ( sum > 0 && divider > 0){
         this->numberOfFingers = sum / divider;
-        qDebug() << "Neue Fingeranzahl: " << this->numberOfFingers;
+        //qDebug() << "Neue Fingeranzahl: " << this->numberOfFingers;
     }
 }
 
@@ -242,7 +242,7 @@ void HandAnalyzer::setRectAverage(int rectA){
     int averageOfTheOlderRects = sum / bound;
     if (rectA > (averageOfTheOlderRects * rectVerhaeltnis)){
         this->schlag = true;
-        qDebug() << "Schlag mit " << this->numberOfFingers << " Finger.";
+        //qDebug() << "Schlag mit " << this->numberOfFingers << " Finger.";
     } else {
         this->schlag = false;
     }

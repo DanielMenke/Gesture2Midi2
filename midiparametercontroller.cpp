@@ -11,7 +11,7 @@ MidiParameterController::MidiParameterController():
 
 MidiParameterController::~MidiParameterController()
 {
-
+   normedValue=0;
 }
 
 void MidiParameterController::setMidiController(int value)
