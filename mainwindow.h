@@ -57,6 +57,12 @@ private slots:
 
     void on_midiControllerSpinBox_valueChanged(int arg1);
 
+    void on_rootComboBox_activated(const QString &arg1);
+
+    void on_octaveSpinBox_valueChanged(int arg1);
+
+    void on_presetComboBox_activated(const QString &arg1);
+
 private:
     int midiControllerNumber;
     QTimer timer;

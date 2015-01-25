@@ -7,6 +7,7 @@ MidiNoteController::MidiNoteController()
 
 
 void MidiNoteController::initPreset(){
+    this->preset.clear();
     //First
         vector<int> firstChord;
         firstChord.push_back(0);
@@ -41,6 +42,78 @@ void MidiNoteController::initPreset(){
         this->preset.push_back(fifthChord);
 }
 
+void MidiNoteController::initDurianPreset(){
+    this->preset.clear();
+    //First
+        vector<int> firstChord;
+        firstChord.push_back(0);
+        firstChord.push_back(3);
+        firstChord.push_back(7);
+
+        //Second
+        vector<int> secondChord;
+        secondChord.push_back(3);
+        secondChord.push_back(10);
+        secondChord.push_back(7);
+
+        vector<int> thirdChord;
+        thirdChord.push_back(12);
+        thirdChord.push_back(3);
+        thirdChord.push_back(10);
+
+        vector<int> fourthChord;
+        fourthChord.push_back(10);
+        fourthChord.push_back(13);
+        fourthChord.push_back(17);
+
+        vector<int> fifthChord;
+        fifthChord.push_back(10);
+        fifthChord.push_back(3);
+        fifthChord.push_back(6);
+
+        this->preset.push_back(firstChord);
+        this->preset.push_back(secondChord);
+        this->preset.push_back(thirdChord);
+        this->preset.push_back(fourthChord);
+        this->preset.push_back(fifthChord);
+}
+
+void MidiNoteController::initOverdurPreset(){
+    this->preset.clear();
+    //First
+        vector<int> firstChord;
+        firstChord.push_back(0);
+        firstChord.push_back(4);
+        firstChord.push_back(8);
+
+        //Second
+        vector<int> secondChord;
+        secondChord.push_back(8);
+        secondChord.push_back(4);
+        secondChord.push_back(12);
+
+        vector<int> thirdChord;
+        thirdChord.push_back(0);
+        thirdChord.push_back(4);
+        thirdChord.push_back(10);
+
+        vector<int> fourthChord;
+        fourthChord.push_back(8);
+        fourthChord.push_back(10);
+        fourthChord.push_back(15);
+
+        vector<int> fifthChord;
+        fifthChord.push_back(0);
+        fifthChord.push_back(8);
+        fifthChord.push_back(5);
+
+        this->preset.push_back(firstChord);
+        this->preset.push_back(secondChord);
+        this->preset.push_back(thirdChord);
+        this->preset.push_back(fourthChord);
+        this->preset.push_back(fifthChord);
+}
+
 map<string, int> MidiNoteController::midiMap(){
     map<string,int> midiMap;
      midiMap["C"] = 12;
@@ -60,6 +133,16 @@ map<string, int> MidiNoteController::midiMap(){
 
 void MidiNoteController::setCurrentPreset(vector<vector<int> > preset){
         this->preset = preset;
+}
+
+void MidiNoteController::setPresetWithName(string presetName){
+    if (presetName.compare("Molly") == 1){
+        this->initPreset();
+    } else if (presetName.compare("Durian") == 1){
+        this->initDurianPreset();
+    } else if (presetName.compare("Overdur") == 1){
+        this->initOverdurPreset();
+    }
 }
 
 void MidiNoteController::setNoteForNoteWithOctave(string note, int octave){

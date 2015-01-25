@@ -12,10 +12,13 @@ public:
     ~MidiNoteController();
     MidiNoteController();
     map<string, int> midiMap();
+    void setPresetWithName(string presetName);
      void setCurrentPreset(vector<vector<int> > preset);
      void setNoteForNoteWithOctave(string note, int octave);
     vector<int> getCurrentNotes(int numberOfFingers);
      void initPreset();
+     void initDurianPreset();
+     void initOverdurPreset();
 
 private:
      //vector<int> currentlyPlaying;
