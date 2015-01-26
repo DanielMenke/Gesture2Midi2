@@ -153,12 +153,21 @@ void MidiNoteController::setNoteForNoteWithOctave(string note, int octave){
 }
 
 vector<int> MidiNoteController::getCurrentNotes(int numberOfFingers){
+    vector<int> currentNotes;
+        //Check at first, if numberOfFingers is in range
+    if (numberOfFingers < 0 || numberOfFingers > this->preset.size()){
+        qDebug() << "Number of Fingers are out of range";
+    } else {
+
+
         qDebug() << "Finger: " << numberOfFingers;
-        vector<int> chord (this->preset.at(numberOfFingers));
-        vector<int> currentNotes;
+        vector<int> chord(this->preset.at(numberOfFingers));
+        qDebug() << "Number of chords: " << chord.size();
         for (int note : chord){
             int resultNote = note + this->currentNote;
             currentNotes.push_back(resultNote);
         }
-        return currentNotes;
+         qDebug() << "Number of chords: " << chord.size() << ". Number of current Notes: " << currentNotes.size();
+     }
+    return currentNotes;
 }
