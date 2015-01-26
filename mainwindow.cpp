@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox->addItems(connections);
 
     connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
-    midiOutput.open("Microsoft GS Wavetable Synth");
+    midiOutput.open("Gesture2Midi");
+    ui->comboBox->setCurrentText("Gesture2Midi");
     midichannel = ui->midichannel->value();
     colorKeyerHSV->setHueTolerance(ui->hueTolerance->value());
     colorKeyerHSV->setHueValue(ui->hueValue->value());
