@@ -2,15 +2,13 @@
 #include <QDebug>
 
 MidiNoteController::MidiNoteController()
-
 {
-    zeroChord.push_back(0);
-    zeroChord.push_back(0);
-    zeroChord.push_back(0);
+    this->isWriting = false;
 }
 
 
 void MidiNoteController::initPreset(){
+    this->isWriting = true;
     this->preset.clear();
     //First
         vector<int> firstChord;
@@ -44,10 +42,11 @@ void MidiNoteController::initPreset(){
         this->preset.push_back(thirdChord);
         this->preset.push_back(fourthChord);
         this->preset.push_back(fifthChord);
-
+        this->isWriting = false;
 }
 
 void MidiNoteController::initDurianPreset(){
+    this->isWriting = true;
     this->preset.clear();
     //First
         vector<int> firstChord;
@@ -81,10 +80,11 @@ void MidiNoteController::initDurianPreset(){
         this->preset.push_back(thirdChord);
         this->preset.push_back(fourthChord);
         this->preset.push_back(fifthChord);
-
+        this->isWriting = false;
 }
 
 void MidiNoteController::initOverdurPreset(){
+    this->isWriting = true;
     this->preset.clear();
     //First
         vector<int> firstChord;
@@ -118,10 +118,11 @@ void MidiNoteController::initOverdurPreset(){
         this->preset.push_back(thirdChord);
         this->preset.push_back(fourthChord);
         this->preset.push_back(fifthChord);
-
+        this->isWriting = false;
 }
 
 map<string, int> MidiNoteController::midiMap(){
+    this->isWriting = true;
     map<string,int> midiMap;
      midiMap["C"] = 12;
      midiMap["C#"] = 13;
@@ -135,14 +136,18 @@ map<string, int> MidiNoteController::midiMap(){
      midiMap["A"] = 21;
      midiMap["A#"] = 22;
      midiMap["B"] = 23;
+     this->isWriting = false;
        return midiMap;
 }
 
 void MidiNoteController::setCurrentPreset(vector<vector<int> > preset){
+    this->isWriting = true;
         this->preset = preset;
+    this->isWriting = false;
 }
 
 void MidiNoteController::setPresetWithName(string presetName){
+    this->isWriting = true;
     if (presetName.compare("Molly") == 1){
         this->initPreset();
     } else if (presetName.compare("Durian") == 1){
@@ -150,37 +155,31 @@ void MidiNoteController::setPresetWithName(string presetName){
     } else if (presetName.compare("Overdur") == 1){
         this->initOverdurPreset();
     }
+    this->isWriting = false;
 }
 
 void MidiNoteController::setNoteForNoteWithOctave(string note, int octave){
+    this->isWriting = true;
         map<string,int> midiMap= this->midiMap();
         int noteValue = midiMap[note];
         this->currentNote =  (noteValue + (12 * octave));
         //qDebug() << "New grundton " << this->currentNote;
+        this->isWriting = false;
 }
 
 vector<int> MidiNoteController::getCurrentNotes(int numberOfFingers){
     vector<int> currentNotes;
+    if (!this->isWriting){
         //Check at first, if numberOfFingers is in range
-    if (numberOfFingers < 0 || numberOfFingers > this->preset.size()){
+    if (numberOfFingers < 0 || numberOfFingers >= this->preset.size()){
         qDebug() << "Number of Fingers are out of range";
     } else {
-
-
-        qDebug() << "Finger: " << numberOfFingers;
-        vector<int> chord(this->preset.at(numberOfFingers));
-        qDebug() << "Number of chords: " << chord.size();
-        for (int note : chord){
+        //qDebug() << "Finger: " << numberOfFingers;
+        for (int note : preset.at(numberOfFingers)){
             int resultNote = note + this->currentNote;
             currentNotes.push_back(resultNote);
         }
-         qDebug() << "Number of chords: " << chord.size() << ". Number of current Notes: " << currentNotes.size();
      }
-    this->preset.push_back(zeroChord);
-    this->preset.push_back(zeroChord);
-    this->preset.push_back(zeroChord);
-    this->preset.push_back(zeroChord);
-    this->preset.push_back(zeroChord);
+    }
     return currentNotes;
-
 }

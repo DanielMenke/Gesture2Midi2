@@ -45,8 +45,6 @@ private slots:
 
     void sendMidiParameter();
 
-    void sendMidiNotes();
-
     void on_sendMidiControllerCheckbox_toggled(bool checked);
 
     void on_midiMappingModeCheckBox_toggled(bool checked);
@@ -67,7 +65,7 @@ private slots:
 
 private:
     int midiControllerNumber;
-    QTimer notesTimer, controllerTimer;
+    QTimer timer;
     Ui::MainWindow *ui;
     drumstick::rt::MIDIOutput midiOutput;
     int midichannel;
@@ -76,7 +74,7 @@ private:
     bool sendMidiControllerEnabled;
     std::vector<int> currentlyPlaying;
     bool isPlaying;
-
+    unsigned long long timeStampFromLastSchlag;
 };
 
 #endif // MAINWINDOW_H

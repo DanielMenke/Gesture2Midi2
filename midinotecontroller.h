@@ -22,10 +22,8 @@ public:
 
 private:
      //vector<int> currentlyPlaying;
-     vector<vector<int>> zeroPreset;
-     vector<int> zeroChord;
      vector<vector<int>> preset;
-     //bool isPlaying = false;
+     bool isWriting = true;
      int currentNote;
 };
 

@@ -168,8 +168,8 @@ cv::Mat HandAnalyzer::getResultMatFromMat(const Mat &input){
             }
             if (finger < 0){
                             finger = 0;
-            } else if (finger > 5){
-                            finger = 5;
+            } else if (finger > 4){
+                            finger = 4;
             }
         }
        }
