@@ -2,7 +2,11 @@
 #include <QDebug>
 
 MidiNoteController::MidiNoteController()
+
 {
+    zeroChord.push_back(0);
+    zeroChord.push_back(0);
+    zeroChord.push_back(0);
 }
 
 
@@ -40,6 +44,7 @@ void MidiNoteController::initPreset(){
         this->preset.push_back(thirdChord);
         this->preset.push_back(fourthChord);
         this->preset.push_back(fifthChord);
+
 }
 
 void MidiNoteController::initDurianPreset(){
@@ -76,6 +81,7 @@ void MidiNoteController::initDurianPreset(){
         this->preset.push_back(thirdChord);
         this->preset.push_back(fourthChord);
         this->preset.push_back(fifthChord);
+
 }
 
 void MidiNoteController::initOverdurPreset(){
@@ -112,6 +118,7 @@ void MidiNoteController::initOverdurPreset(){
         this->preset.push_back(thirdChord);
         this->preset.push_back(fourthChord);
         this->preset.push_back(fifthChord);
+
 }
 
 map<string, int> MidiNoteController::midiMap(){
@@ -169,5 +176,11 @@ vector<int> MidiNoteController::getCurrentNotes(int numberOfFingers){
         }
          qDebug() << "Number of chords: " << chord.size() << ". Number of current Notes: " << currentNotes.size();
      }
+    this->preset.push_back(zeroChord);
+    this->preset.push_back(zeroChord);
+    this->preset.push_back(zeroChord);
+    this->preset.push_back(zeroChord);
+    this->preset.push_back(zeroChord);
     return currentNotes;
+
 }

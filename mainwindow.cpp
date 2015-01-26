@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     colorKeyerHSV(new ColorKeyerHSV())
 {
-
+    connect(&controllerTimer, SIGNAL(timeout()),this, SLOT(sendMidiParameter()));
+    connect(&notesTimer, SIGNAL(timeout()),this, SLOT(sendMidiNotes()));
     QShortcut *spacebar = new QShortcut(QKeySequence(Qt::Key_Space),this);
     ui->setupUi(this);
     ui->midiControllerSpinBox->setValue(16);
@@ -39,9 +40,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 
-{   delete colorKeyerHSV;
+{
+    midiOutput.close();
+    delete colorKeyerHSV;
     delete ui;
     delete videoEngine;
+
 }
 
 
@@ -92,12 +96,11 @@ void MainWindow::on_saturationValue_valueChanged(int value)
 {
     colorKeyerHSV->setSaturationValue(value);
 }
-
-void MainWindow::sendMidiParameter(){
-        int midiControllerValue = colorKeyerHSV->handAnalyzer->midiParameterController->getMidiController();
-        midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
-        this->ui->midiControllerValueDisplay->display(midiControllerValue);
-        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
+void MainWindow::sendMidiNotes(){
+//        int midiControllerValue = colorKeyerHSV->handAnalyzer->midiParameterController->getMidiController();
+//        midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
+//        this->ui->midiControllerValueDisplay->display(midiControllerValue);
+//        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
 
 
     if (this->colorKeyerHSV->handAnalyzer->isSchlag()){
@@ -123,7 +126,7 @@ void MainWindow::sendMidiParameter(){
   //  qDebug() << "Number off notes to turn on: " << notesToTurnOn.size();
 
        for (int i = 0; i < notesToTurnOff.size(); i++){
-        //   qDebug() << "Turn off note: " << notesToTurnOff.at(i);
+           qDebug() << "Turn off note: " << notesToTurnOff.at(i);
            this->midiOutput.sendNoteOff(midichannel, notesToTurnOff.at(i), 0);
        }
 
@@ -139,6 +142,53 @@ void MainWindow::sendMidiParameter(){
 
 
     }
+}
+void MainWindow::sendMidiParameter(){
+        int midiControllerValue = colorKeyerHSV->handAnalyzer->midiParameterController->getMidiController();
+        midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
+        this->ui->midiControllerValueDisplay->display(midiControllerValue);
+        this->ui->midiControllerValueKnob->setValue(midiControllerValue);
+
+
+//    if (this->colorKeyerHSV->handAnalyzer->isSchlag()){
+
+//        int numberOfFingers = this->colorKeyerHSV->handAnalyzer->getNumberOfFingers();
+//        vector<int> currentNotes = this->colorKeyerHSV->handAnalyzer->midiNoteController->getCurrentNotes(numberOfFingers);
+//        vector<int> notesToTurnOff;
+//        vector<int> notesToTurnOn;
+
+//        if (!this->currentlyPlaying.empty()){
+//            //Check which notes needs to be turned off etc.
+//           vector<int> intersection =  this->instersection(this->currentlyPlaying, currentNotes);
+//           notesToTurnOff = this->difference( this->currentlyPlaying, intersection);
+//           notesToTurnOn = this->difference(currentNotes, intersection);
+//        } else {
+//            for (int it : currentNotes){
+//                notesToTurnOn.push_back(it);
+//            }
+//        }
+
+
+//  //  qDebug() << "Number of notes to turn on given by the midinoteController " << currentNotes.size();
+//  //  qDebug() << "Number off notes to turn on: " << notesToTurnOn.size();
+
+//       for (int i = 0; i < notesToTurnOff.size(); i++){
+//        //   qDebug() << "Turn off note: " << notesToTurnOff.at(i);
+//           this->midiOutput.sendNoteOff(midichannel, notesToTurnOff.at(i), 0);
+//       }
+
+//        for (int i = 0; i < notesToTurnOn.size(); i++){
+//          //  qDebug() << "Turn on note: " << notesToTurnOn.at(i);
+//            this->midiOutput.sendNoteOn(midichannel, notesToTurnOn.at(i), 127);
+//        }
+//        this->currentlyPlaying.clear();
+//        for (int i = 0; i < currentNotes.size(); i++){
+//            this->currentlyPlaying.push_back(currentNotes.at(i));
+//        }
+
+
+
+//    }
 }
 vector<int> MainWindow::instersection(vector<int> v1, vector<int> v2)
 {
@@ -171,10 +221,12 @@ void MainWindow::on_sendMidiControllerCheckbox_toggled(bool checked){
      this->ui->midiMappingModeCheckBox->setDisabled(checked);
      this->ui->midiMappingModeButton->setDisabled(checked);
     if(checked){
-        connect(&timer, SIGNAL(timeout()),this, SLOT(sendMidiParameter()));
-        timer.start(50);
+
+        controllerTimer.start(47);
+        notesTimer.start(47);
     }else{
-        timer.stop();
+        controllerTimer.stop();
+        notesTimer.stop();
             for (int i = 0; i < this->currentlyPlaying.size(); i++){
                 this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
             }
@@ -185,7 +237,8 @@ void MainWindow::on_sendMidiControllerCheckbox_toggled(bool checked){
 void MainWindow::on_midiMappingModeCheckBox_toggled(bool checked){
      this->ui->sendMidiControllerCheckbox->setDisabled(checked);
     if (checked) {
-        timer.stop();
+        controllerTimer.stop();
+        notesTimer.stop();
         for (int i = 0; i < this->currentlyPlaying.size(); i++){
             this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
         }
