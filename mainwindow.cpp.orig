@@ -21,11 +21,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->midiControllerValueDisplay->setPalette(Qt::green);
     QStringList connections = midiOutput.connections(true);
     ui->comboBox->addItems(connections);
-    connect(&controllerTimer, SIGNAL(timeout()),this, SLOT(sendMidiParameter()));
-    connect(&noteTimer, SIGNAL(timeout()),this, SLOT(sendMidiNotes()));
+
     connect(spacebar, SIGNAL(activated()), this, SLOT(toggleButtonBySpaceBar()));
+<<<<<<< HEAD
+    midiOutput.open("Microsoft GS Wavetable Synth");
+=======
     midiOutput.open("Gesture2Midi");
     ui->comboBox->setCurrentText("Gesture2Midi");
+>>>>>>> Added Gesture2Midi Port as Default
     midichannel = ui->midichannel->value();
     colorKeyerHSV->setHueTolerance(ui->hueTolerance->value());
     colorKeyerHSV->setHueValue(ui->hueValue->value());
@@ -41,12 +44,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 
-{
-    midiOutput.close();
-    delete colorKeyerHSV;
+{   delete colorKeyerHSV;
     delete ui;
     delete videoEngine;
-
 }
 
 
@@ -103,11 +103,6 @@ void MainWindow::sendMidiParameter(){
         midiOutput.sendController(midichannel,midiControllerNumber,midiControllerValue);
         this->ui->midiControllerValueDisplay->display(midiControllerValue);
         this->ui->midiControllerValueKnob->setValue(midiControllerValue);
-
-
-
-}
-void MainWindow::sendMidiNotes(){
 
 
     if (this->colorKeyerHSV->handAnalyzer->isSchlag()){
@@ -181,11 +176,10 @@ void MainWindow::on_sendMidiControllerCheckbox_toggled(bool checked){
      this->ui->midiMappingModeCheckBox->setDisabled(checked);
      this->ui->midiMappingModeButton->setDisabled(checked);
     if(checked){
-        noteTimer.start(51);
-        controllerTimer.start(47);
+        connect(&timer, SIGNAL(timeout()),this, SLOT(sendMidiParameter()));
+        timer.start(50);
     }else{
-        noteTimer.stop();
-        controllerTimer.stop();
+        timer.stop();
             for (int i = 0; i < this->currentlyPlaying.size(); i++){
                 this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
             }
@@ -196,8 +190,7 @@ void MainWindow::on_sendMidiControllerCheckbox_toggled(bool checked){
 void MainWindow::on_midiMappingModeCheckBox_toggled(bool checked){
      this->ui->sendMidiControllerCheckbox->setDisabled(checked);
     if (checked) {
-        noteTimer.stop();
-        controllerTimer.stop();
+        timer.stop();
         for (int i = 0; i < this->currentlyPlaying.size(); i++){
             this->midiOutput.sendNoteOff(midichannel, this->currentlyPlaying.at(i), 0);
         }
